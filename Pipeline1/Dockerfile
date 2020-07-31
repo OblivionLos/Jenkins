@@ -7,6 +7,4 @@ RUN apt-get update && apt-get install -y \
  
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-ENTRYPOINT 
-
-CMD passwd root
+CMD tail -f /dev/null
