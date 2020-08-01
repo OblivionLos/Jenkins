@@ -7,9 +7,11 @@ RUN apt-get update && apt-get install -y \
  
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-RUN useradd -s /bin/bash wideuser && usermod -aG sudo wideuser && \
+RUN mkdir /etc/sudoers.d && \
+    useradd -s /bin/bash wideuser && \
+    echo "wideuser ALL=(ALL) ALL" \
+    > /etc/sudoers.d/wideuser &&\
     useradd -s /bin/bash pepega && \
-    mkdir /etc/sudoers.d && \
     echo "pepega ALL=(ALL) \
     NOPASSWD:/usr/sbin/service nginx start, \
     /usr/sbin/service nginx stop, \
