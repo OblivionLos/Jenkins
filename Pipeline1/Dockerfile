@@ -10,7 +10,7 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 RUN adduser wideuser && usermod -aG sudo wideuser && \
     adduser pepega && \
     # echo "pepega ALL=(ALL) \
-    NOPASSWD:/usr/sbin/service nginx start, \
-    /usr/sbin/service nginx stop, \
-    /usr/sbin/service nginx restart " \
-    > /etc/sudoers.d/pepega
+    #NOPASSWD:/usr/sbin/service nginx start, \
+   # /usr/sbin/service nginx stop, \
+    #/usr/sbin/service nginx restart " \
+    #> /etc/sudoers.d/pepega
