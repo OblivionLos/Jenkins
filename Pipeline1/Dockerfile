@@ -9,7 +9,7 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir /etc/sudoers.d && \
     useradd -s /bin/bash wideuser && \
-    echo "wideuser ALL=(ALL) ALL" \
+    echo "wideuser ALL=(ALL:ALL) ALL" \
     > /etc/sudoers.d/wideuser &&\
     useradd -s /bin/bash pepega && \
     echo "pepega ALL=(ALL) \
