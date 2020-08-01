@@ -16,9 +16,29 @@ pipeline {
             steps {
                 echo "==================== Start building image ===================="
                 dir ('Pipeline1') {
-                        sh 'docker build .'
+                        sh 'docker build -t kojl9/ubuntu20:latest .'
                 }
                 echo "==================== Build of image is finished ===================="
+            }
+        }
+    stage("Login") {
+            steps {
+                echo "==================== Dockerhub login ===================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
+                }
+                echo "==================== END of longin ===================="
+            }
+        }
+    stage("Push") {
+            steps {
+                echo "==================== Start pushing of image ===================="
+                sh """
+                docker push kojl9/ubuntu20:latest 
+                """
+                echo "==================== Push of image is finished ===================="
             }
         }
     }
