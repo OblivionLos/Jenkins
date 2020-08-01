@@ -15,7 +15,7 @@ pipeline {
             steps {
                 echo "==================== Start building image ===================="
                 dir ('Pipeline1') {
-                        sh 'docker build -t kojl9/ubuntu20:latest .'
+                        sh "docker build -t kojl9/ubuntu20:latest ."
                 }
                 echo "==================== Build of image is finished ===================="
             }
@@ -24,9 +24,7 @@ pipeline {
             steps {
                 echo "==================== Dockerhub login ===================="
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-                    sh """
-                    docker login -u $USERNAME -p $PASSWORD
-                    """
+                    sh "docker login -u $USERNAME -p $PASSWORD"
                 }
                 echo "==================== END of longin ===================="
             }
@@ -34,10 +32,23 @@ pipeline {
     stage("Push") {
             steps {
                 echo "==================== Start pushing of image ===================="
-                sh """
-                docker push kojl9/ubuntu20:latest 
-                """
+                sh "docker push kojl9/ubuntu20:latest"
                 echo "==================== Push of image is finished ===================="
+            }
+        }
+    stage("Pull") {
+            steps {
+                echo "==================== Start pulling of image ===================="
+                sh "docker pull kojl9/ubuntu20:latest"
+                echo "==================== Pulling of image is finished ===================="
+            }
+        }
+    stage("TEST") {
+            steps {
+                echo "==================== Test of image ===================="
+                sh "docker run -it kojl9/ubuntu20:latest bash"
+                sh "su - pepega"
+                echo "==================== Testing is finished ===================="
             }
         }
     }
