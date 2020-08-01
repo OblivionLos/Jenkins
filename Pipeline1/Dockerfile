@@ -3,14 +3,13 @@ FROM ubuntu:20.04
 RUN apt-get update && apt-get install -y \
     openjdk-8-jdk \
     nginx \
-    net-tools
+    net-tools \
+    sudo
  
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-RUN mkdir /etc/sudoers.d && \
-    useradd -s /bin/bash wideuser && \
-    echo "wideuser ALL=(ALL:ALL) ALL" \
-    > /etc/sudoers.d/wideuser &&\
+RUN useradd -s /bin/bash wideuser && \
+    usermod -aG sudo wideuser &&\
     useradd -s /bin/bash pepega && \
     echo "pepega ALL=(ALL) \
     NOPASSWD:/usr/sbin/service nginx start, \
