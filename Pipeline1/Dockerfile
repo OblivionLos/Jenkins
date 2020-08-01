@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
  
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-RUN adduser wideuser && usermod -aG sudo wideuser \
+RUN adduser wideuser && usermod -aG sudo wideuser && \
     adduser pepega && \
     echo "pepega ALL=(ALL) \
     NOPASSWD:/usr/sbin/service nginx start, \
