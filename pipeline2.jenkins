@@ -22,7 +22,7 @@ pipeline {
     stage("Build") {
             steps {
                 echo "==================== Build of application ===================="
-                sh "docker run -it --rm --name my-maven-project \
+                sh "docker run -d --rm --name my-maven-project \
                 -v ~/JavaApp/springbootwebapp:/usr/src/mymaven \
                 -w /usr/src/mymaven maven mvn clean install"
                 
