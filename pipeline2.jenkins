@@ -14,7 +14,7 @@ pipeline {
         stage("Prepare") {
             steps {
                 echo "==================== Prepare ===================="
-                sh "mkdir NewPepega && cd NewPepega"
+                sh "mkdir NewPepega || cd NewPepega"
                 sh "docker pull maven"
                 sh "git clone https://github.com/springframeworkguru/springbootwebapp"
             }
