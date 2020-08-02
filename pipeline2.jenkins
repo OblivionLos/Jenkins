@@ -11,47 +11,30 @@ pipeline {
         timestamps()
     }
     stages {
-        stage("Build") {
+        stage("Prepare") {
             steps {
-                echo "==================== Start building image ===================="
-                dir ('Pipeline1') {
-                        sh "docker build -t kojl9/ubuntu20:latest ."
-                }
-                echo "==================== Build of image is finished ===================="
+                echo "==================== Prepare ===================="
+                sh "mkdir NewPepega && cd NewPepega"
+                sh "docker pull maven"
+                sh "git clone https://github.com/springframeworkguru/springbootwebapp"
             }
         }
-    stage("Login") {
+    stage("Build") {
             steps {
-                echo "==================== Dockerhub login ===================="
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-                    sh "docker login -u $USERNAME -p $PASSWORD"
-                }
-                echo "==================== END of longin ===================="
-            }
-        }
-    stage("Push") {
-            steps {
-                echo "==================== Start pushing of image ===================="
-                sh "docker push kojl9/ubuntu20:latest"
-                echo "==================== Push of image is finished ===================="
-            }
-        }
-    stage("Pull") {
-            steps {
-                echo "==================== Start pulling of image ===================="
-                sh "docker pull kojl9/ubuntu20:latest"
-                echo "==================== Pulling of image is finished ===================="
+                echo "==================== Build of application ===================="
+                sh "docker run -it --rm --name my-maven-project \
+                -v ~/JavaApp/springbootwebapp:/usr/src/mymaven \
+                -w /usr/src/mymaven maven mvn clean install"
+                
             }
         }
     stage("TEST") {
             steps {
                 echo "==================== Test of image ===================="
-                sh "docker run -d --name test_of_build -p 8988:8989 kojl9/ubuntu20:latest bash"
-                sh "docker exec -d test_of_build sudo service nginx start"
-                sh 'curl -sL http://localhost:8988 -w "%{http_code}\\n"  -o /dev/null'
-                sh "exit"
-                sh "docker stop test_of_build"
-                sh "docker rm test_of_build"
+                sh "cd springbootwebapp/target"
+                sh "java -Dserver.port=9999 -jar spring-boot-web-0.0.1-SNAPSHOT.jar"
+                sh 'curl -sL http://localhost:9999 -w "%{http_code}\\n"  -o /dev/null'
+
                 echo "==================== Testing is finished ===================="
             }
         }
