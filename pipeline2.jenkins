@@ -33,7 +33,7 @@ pipeline {
                 echo "==================== Test of image ===================="
                 sh "cd NewPepega"
                 sh "cd springbootwebapp"
-                sh "target"
+                sh "ls"
                 sh "java -Dserver.port=9999 -jar spring-boot-web-0.0.1-SNAPSHOT.jar"
                 sh 'curl -sL http://localhost:9999 -w "%{http_code}\\n"  -o /dev/null'
 
