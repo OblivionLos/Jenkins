@@ -16,7 +16,7 @@ pipeline {
                 echo "==================== Prepare ===================="
                 sh "mkdir NewPepega || cd NewPepega"
                 sh "docker pull maven"
-                sh "git clone https://github.com/springframeworkguru/springbootwebapp"
+                sh "rm -R springbootwebapp || git clone https://github.com/springframeworkguru/springbootwebapp"
             }
         }
     stage("Build") {
