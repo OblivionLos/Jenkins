@@ -22,19 +22,15 @@ pipeline {
     stage("Build") {
             steps {
                 echo "==================== Build of application ===================="
-                sh "docker run -it --rm --name my-maven-project \
-                -v ~/NewPepega/springbootwebapp:/usr/src/mymaven \
-                -w /usr/src/mymaven maven mvn clean install"
+                sh "cd springbootwebapp"
+                sh "mvn package"
                 
             }
         }
     stage("TEST") {
             steps {
                 echo "==================== Test of image ===================="
-                sh "$PWD"
-                sh "$HOME"
-                sh "cd target"
-                sh "ls"
+                sh "cp NewPepeg
                 sh "java -Dserver.port=9999 -jar spring-boot-web-0.0.1-SNAPSHOT.jar"
                 sh 'curl -sL http://localhost:9999 -w "%{http_code}\\n"  -o /dev/null'
 
