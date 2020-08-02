@@ -1,0 +1,59 @@
+#!groovy
+// Set up properties
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent {
+        label 'master'
+        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("Build") {
+            steps {
+                echo "==================== Start building image ===================="
+                dir ('Pipeline1') {
+                        sh "docker build -t kojl9/ubuntu20:latest ."
+                }
+                echo "==================== Build of image is finished ===================="
+            }
+        }
+    stage("Login") {
+            steps {
+                echo "==================== Dockerhub login ===================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
+                    sh "docker login -u $USERNAME -p $PASSWORD"
+                }
+                echo "==================== END of longin ===================="
+            }
+        }
+    stage("Push") {
+            steps {
+                echo "==================== Start pushing of image ===================="
+                sh "docker push kojl9/ubuntu20:latest"
+                echo "==================== Push of image is finished ===================="
+            }
+        }
+    stage("Pull") {
+            steps {
+                echo "==================== Start pulling of image ===================="
+                sh "docker pull kojl9/ubuntu20:latest"
+                echo "==================== Pulling of image is finished ===================="
+            }
+        }
+    stage("TEST") {
+            steps {
+                echo "==================== Test of image ===================="
+                sh "docker run -d --name test_of_build -p 8988:8989 kojl9/ubuntu20:latest bash"
+                sh "docker exec -d test_of_build sudo service nginx start"
+                sh 'curl -sL http://localhost:8988 -w "%{http_code}\\n"  -o /dev/null'
+                sh "exit"
+                sh "docker stop test_of_build"
+                sh "docker rm test_of_build"
+                echo "==================== Testing is finished ===================="
+            }
+        }
+    }
+}
