@@ -27,3 +27,10 @@ https://github.com/OblivionLos/Jenkins/blob/master/pipeline1.jenkins
 
 https://github.com/OblivionLos/Jenkins/blob/master/pipeline2.jenkins
 
+- Create project in Jenkins
+
+![JAVA](https://github.com/OblivionLos/Jenkins/blob/master/Screenshots/5.png)
+
+- Run pipeline
+
+![LOG](https://github.com/OblivionLos/Jenkins/blob/master/Screenshots/6.png)
