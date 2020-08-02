@@ -46,8 +46,9 @@ pipeline {
     stage("TEST") {
             steps {
                 echo "==================== Test of image ===================="
-                sh "docker run kojl9/ubuntu20:latest bash"
-                sh "su - pepega"
+                sh "docker run -d --name test_of_build -p 8988:8989 kojl9/ubuntu20:latest bash"
+                sh "docker exec -d test_of_build sudo service nginx start"
+                sh "curl -sL http://localhost:8988 -2 "%{http_code}\\n"  -o /dev/null"
                 echo "==================== Testing is finished ===================="
             }
         }
