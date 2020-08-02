@@ -30,7 +30,7 @@ pipeline {
     stage("TEST") {
             steps {
                 echo "==================== Test of image ===================="
-                sh "cp NewPepeg
+                sh "cd target"
                 sh "java -Dserver.port=9999 -jar spring-boot-web-0.0.1-SNAPSHOT.jar"
                 sh 'curl -sL http://localhost:9999 -w "%{http_code}\\n"  -o /dev/null'
 
