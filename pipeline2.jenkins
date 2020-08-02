@@ -14,16 +14,14 @@ pipeline {
         stage("Prepare") {
             steps {
                 echo "==================== Prepare ===================="
-                sh "mkdir NewPepega || cd NewPepega"
-                sh "rm -R springbootwebapp || git clone https://github.com/springframeworkguru/springbootwebapp"
+                sh "mkdir NewPepega || cd NewPepega && \
+                    rm -R springbootwebapp || git clone https://github.com/springframeworkguru/springbootwebapp"
             }
         }
     stage("Build") {
             steps {
                 echo "==================== Build of application ===================="
-                sh "cd springbootwebapp"
-                sh "mvn package"
-                
+                sh "cd springbootwebapp && mvn package"
             }
         }
     stage("TEST") {
