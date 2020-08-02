@@ -21,7 +21,7 @@ pipeline {
     stage("Build") {
             steps {
                 echo "==================== Build of application ===================="
-                sh "cd springbootwebapp && mvn package"
+                sh "cd NewPepega/springbootwebapp && mvn package"
             }
         }
     stage("TEST") {
