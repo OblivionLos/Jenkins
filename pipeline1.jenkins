@@ -49,6 +49,7 @@ pipeline {
                 sh "docker run -d --name test_of_build -p 8988:8989 kojl9/ubuntu20:latest bash"
                 sh "docker exec -d test_of_build sudo service nginx start"
                 sh 'curl -sL http://localhost:8988 -w "%{http_code}\\n"  -o /dev/null'
+                sh "exit"
                 sh "docker stop test_of_build"
                 sh "docker rm test_of_build"
                 echo "==================== Testing is finished ===================="
