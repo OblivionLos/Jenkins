@@ -21,13 +21,13 @@ pipeline {
     stage("Build") {
             steps {
                 echo "==================== Build of application ===================="
-                sh "cd NewPepega/springbootwebapp && mvn package"
+                sh "cd springbootwebapp && mvn package"
             }
         }
     stage("TEST") {
             steps {
                 echo "==================== Test of image ===================="
-                sh "cd NewPepega/springbootwebapp/target/ && \
+                sh "cd springbootwebapp/target/ && \
                 java -Dserver.port=8888 -jar spring-boot-web-0.0.1-SNAPSHOT.jar &"
                 sh "sleep 80"
                 sh 'curl -sL http://localhost:8888 -w "%{http_code}\\n"  -o /dev/null'
