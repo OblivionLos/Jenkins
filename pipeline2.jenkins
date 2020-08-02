@@ -27,7 +27,7 @@ pipeline {
     stage("TEST") {
             steps {
                 echo "==================== Test of image ===================="
-                sh "cd springbootwebapp/target/ && \
+                sh "cd NewPepega/springbootwebapp/target/ && \
                 java -Dserver.port=8888 -jar spring-boot-web-0.0.1-SNAPSHOT.jar &"
                 sh "sleep 80"
                 sh 'curl -sL http://localhost:8888 -w "%{http_code}\\n"  -o /dev/null'
