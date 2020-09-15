@@ -1,71 +1,26 @@
-def branch
-def revision
-def registryIp
-
 pipeline {
-
-    agent {
-        kubernetes {
-            label 'build-service-pod'
-            defaultContainer 'jnlp'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    job: build-service
-spec:
-  containers:
-  - name: docker
-    image: docker
-    command: ["cat"]
-    tty: true
-
-"""
-        }
+  agent any
+    
+  tools {nodejs "node"}
+    
+  stages {
+        
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/andreipope/HelloWorld'
+      }
     }
-    options {
-        skipDefaultCheckout true
+        
+    stage('Install dependencies') {
+      steps {
+        sh 'npm install'
+      }
     }
-
-    stages {
-        stage ('checkout') {
-            steps {
-                echo "==================== Start building image ===================="
-                dir ('Nodejs') {
-                        sh "docker build -t kojl9/nodejs:latest ."
-						sh "docker build -t kojl9/nodejs:stable ." 
-                }
-                echo "==================== Build of image is finished ===================="
-            }
-
-        }
-    stage("Login") {
-            steps {
-                echo "==================== Dockerhub login ===================="
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-                    sh "docker login -u $USERNAME -p $PASSWORD"
-                }
-                echo "==================== END of longin ===================="
-            }
-        }
-    stage("Push") {
-            steps {
-                echo "==================== Start pushing of image ===================="
-                sh "docker push kojl9/nodejs:latest"
-				sh "docker push kojl9/nodejs:stable"
-                echo "==================== Push of image is finished ===================="
-            }
-        }
-  
-    stage("TEST") {
-            steps {
-                echo "==================== Test of image ===================="
-                sh "kubectl run nodejs-kube --image=kojl9/nodejs:stable --port=3456 -n app"
-                sh "kubectl expose pod nodejs-kube-kube --type=LoadBalancer --port=3456"
-                sh 'minikube service nodejs-kube'
-                echo "==================== Testing is finished ===================="
-            }
-        }
-    }
+     
+    stage('Test') {
+      steps {
+         sh 'npm test'
+      }
+    }      
+  }
 }
