@@ -3,14 +3,35 @@
 properties([disableConcurrentBuilds()])
 
 pipeline {
-    agent {
-	    kubernetes {
-		    label 'podlabel'
-	    }                   
-    }
 
+    agent {
+        kubernetes {
+            label 'build-service-pod'
+            defaultContainer 'jnlp'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    job: build-service
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu:20.04
+    command: ["cat"]
+    tty: true
+	
+  - name: docker
+    image: docker:18.09.2
+    command: ["cat"]
+    tty: true
+	
+"""
+        }
+    }
     options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        skipDefaultCheckout true
+    }
 
     }
     stages {
@@ -19,7 +40,7 @@ pipeline {
                 echo "==================== Start building image ===================="
                 dir ('Nodejs') {
                         sh "docker build -t kojl9/nodejs:latest ."
-			sh "docker build -t kojl9/nodejs:stable ." 
+						sh "docker build -t kojl9/nodejs:stable ." 
                 }
                 echo "==================== Build of image is finished ===================="
             }
@@ -37,7 +58,7 @@ pipeline {
             steps {
                 echo "==================== Start pushing of image ===================="
                 sh "docker push kojl9/nodejs:latest"
-		sh "docker push kojl9/nodejs:stable"
+				sh "docker push kojl9/nodejs:stable"
                 echo "==================== Push of image is finished ===================="
             }
         }
