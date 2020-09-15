@@ -1,75 +1,21 @@
-#!groovy
-// Set up properties
-properties([disableConcurrentBuilds()])
-
-pipeline {
-
-    agent {
-        kubernetes {
-            label 'build-service-pod'
-            defaultContainer 'jnlp'
-            yaml """
+podTemplate(yaml: """
 apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    job: build-service
+    some-label: some-label-value
 spec:
   containers:
-  - name: ubuntu
-    image: ubuntu:20.04
-    command: ["cat"]
+  - name: busybox
+    image: busybox
+    command:
+    - cat
     tty: true
-	
-  - name: docker
-    image: docker:18.09.2
-    command: ["cat"]
-    tty: true
-	
 """
-        }
-    }
-    options {
-        skipDefaultCheckout true
-    }
-
-    stages {
-        stage("Build") {
-            steps {
-                echo "==================== Start building image ===================="
-                dir ('Nodejs') {
-                        sh "docker build -t kojl9/nodejs:latest ."
-						sh "docker build -t kojl9/nodejs:stable ." 
-                }
-                echo "==================== Build of image is finished ===================="
-            }
-        }
-    stage("Login") {
-            steps {
-                echo "==================== Dockerhub login ===================="
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-                    sh "docker login -u $USERNAME -p $PASSWORD"
-                }
-                echo "==================== END of longin ===================="
-            }
-        }
-    stage("Push") {
-            steps {
-                echo "==================== Start pushing of image ===================="
-                sh "docker push kojl9/nodejs:latest"
-				sh "docker push kojl9/nodejs:stable"
-                echo "==================== Push of image is finished ===================="
-            }
-        }
-  
-    stage("TEST") {
-            steps {
-                echo "==================== Test of image ===================="
-                sh "kubectl run nodejs-kube --image=kojl9/nodejs:stable --port=3456 -n app"
-                sh "kubectl expose pod nodejs-kube-kube --type=LoadBalancer --port=3456"
-                sh 'minikube service nodejs-kube'
-                echo "==================== Testing is finished ===================="
-            }
-        }
+) {
+    node(POD_LABEL) {
+      container('busybox') {
+        sh "hostname"
+      }
     }
 }
