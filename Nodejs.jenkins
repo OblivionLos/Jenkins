@@ -1,26 +1,53 @@
+#!groovy
+// Set up properties
+properties([disableConcurrentBuilds()])
+
 pipeline {
-  agent any
-    
-  tools {nodejs "node"}
-    
-  stages {
-        
-    stage('Cloning Git') {
-      steps {
-        git 'https://github.com/andreipope/HelloWorld'
-      }
+    agent {
+        label 'master'
+        }
+	triggers { pollSCM('H/15****') }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
     }
-        
-    stage('Install dependencies') {
-      steps {
-        sh 'npm install'
-      }
+    stages {
+        stage("Build") {
+            steps {
+                echo "==================== Start building image ===================="
+                dir ('Nodejs') {
+                        sh "docker build -t kojl9/nodejs:latest ."
+					             	sh "docker build -t kojl9/nodejs:stable ." 
+                }
+                echo "==================== Build of image is finished ===================="
+            }
+        }
+    stage("Login") {
+            steps {
+                echo "==================== Dockerhub login ===================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
+                    sh "docker login -u $USERNAME -p $PASSWORD"
+                }
+                echo "==================== END of longin ===================="
+            }
+        }
+    stage("Push") {
+            steps {
+                echo "==================== Start pushing of image ===================="
+                sh "docker push kojl9/nodejs:latest"
+				        sh "docker push kojl9/nodejs:stable"
+                echo "==================== Push of image is finished ===================="
+            }
+        }
+
+    stage("TEST") {
+            steps {
+                echo "==================== Test of image ===================="
+                sh "kubectl run nodejs-kube --image=kojl9/nodejs:stable --port=3456 -n app"
+                sh "kubectl expose pod nodejs-kube-kube --type=LoadBalancer --port=3456 -n app"
+                sh 'minikube service nodejs-kube -n app'
+                echo "==================== Testing is finished ===================="
+            }
+        }
     }
-     
-    stage('Test') {
-      steps {
-         sh 'npm test'
-      }
-    }      
-  }
 }
