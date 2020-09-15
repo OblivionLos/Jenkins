@@ -19,7 +19,7 @@ pipeline {
                 echo "==================== Start building image ===================="
                 dir ('Nodejs') {
                         sh "docker build -t kojl9/nodejs:latest ."
-						sh "docker build -t kojl9/nodejs:stable ." 
+			sh "docker build -t kojl9/nodejs:stable ." 
                 }
                 echo "==================== Build of image is finished ===================="
             }
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 echo "==================== Start pushing of image ===================="
                 sh "docker push kojl9/nodejs:latest"
-				sh "docker push kojl9/nodejs:stable"
+		sh "docker push kojl9/nodejs:stable"
                 echo "==================== Push of image is finished ===================="
             }
         }
