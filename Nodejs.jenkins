@@ -1,13 +1,13 @@
-#!groovy
-// Set up properties
-properties([disableConcurrentBuilds()])
+def branch
+def revision
+def registryIp
 
 pipeline {
 
     agent {
         kubernetes {
             label 'build-service-pod'
-            defaultContainer 'buildcont'
+            defaultContainer 'jnlp'
             yaml """
 apiVersion: v1
 kind: Pod
@@ -16,17 +16,15 @@ metadata:
     job: build-service
 spec:
   containers:
-  - name: busybox
-    image: busybox
-    command:
-    - cat
+  - name: maven
+    image: maven:3.6.0-jdk-11-slim
+    command: ["cat"]
     tty: true
-    
+
   - name: docker
     image: docker:18.09.2
     command: ["cat"]
     tty: true
-	
 """
         }
     }
@@ -35,15 +33,16 @@ spec:
     }
 
     stages {
-        stage("Build") {
+        stage ('checkout') {
             steps {
                 echo "==================== Start building image ===================="
                 dir ('Nodejs') {
                         sh "docker build -t kojl9/nodejs:latest ."
-			            			sh "docker build -t kojl9/nodejs:stable ." 
+						sh "docker build -t kojl9/nodejs:stable ." 
                 }
                 echo "==================== Build of image is finished ===================="
             }
+
         }
     stage("Login") {
             steps {
@@ -58,7 +57,7 @@ spec:
             steps {
                 echo "==================== Start pushing of image ===================="
                 sh "docker push kojl9/nodejs:latest"
-			        	sh "docker push kojl9/nodejs:stable"
+				sh "docker push kojl9/nodejs:stable"
                 echo "==================== Push of image is finished ===================="
             }
         }
