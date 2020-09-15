@@ -33,7 +33,6 @@ spec:
         skipDefaultCheckout true
     }
 
-    }
     stages {
         stage("Build") {
             steps {
