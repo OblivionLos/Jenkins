@@ -16,8 +16,8 @@ metadata:
     job: build-service
 spec:
   containers:
-  - name: busybox
-    image: busybox
+  - name: docker
+    image: docker
     command: ["cat"]
     tty: true
 
