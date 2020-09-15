@@ -1,12 +1,16 @@
-FROM ubuntu:20.04
+FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y \
-    npm \
-    net-tools \
-    git \
+    curl\
+    sudo\
     wget
 
-RUN apt-get update
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+RUN apt install -y git
+
+RUN apt-get update && apt-get install -y \
+    nodejs
 
 RUN npm install -g serve
 
@@ -18,4 +22,6 @@ RUN npm install
 
 RUN npm run build
 
-ENTRYPOINT ["serve", "-s", "build", "-l", "3456"]
+EXPOSE 3456
+
+ENTRYPOINT ["serve", "-s", "build", "-l", "3456", "&"]
