@@ -1,60 +1,27 @@
-def branch
-def revision
-def registryIp
 
 pipeline {
-
-    agent {
-        kubernetes {
-            label 'build-service-pod'
-            defaultContainer 'jenkins/jnlp-slave:3.27-1'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    job: build-service
-spec:
-  containers:
-
-  - name: docker
-    image: docker:18.09.2
-    command: ["cat"]
-    tty: true
- 
-"""
-        }
+  agent any
+    
+  tools {nodejs "node"}
+    
+  stages {
+        
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/andreipope/HelloWorld'
+      }
     }
-    options {
-        skipDefaultCheckout true
+        
+    stage('Install dependencies') {
+      steps {
+        sh 'npm install'
+      }
     }
-
-    stages {    
-        stage ('build artifact') {
-            steps {
-                container('docker') {
-                    echo "==================== Start building image ===================="
-					dir ('Nodejs') {
-                        sh "docker build -t kojl9/nodejs:latest ."
-						sh "docker build -t kojl9/nodejs:stable ." 
-                     }
-                    echo "==================== Build of image is finished ===================="
-                    }
-                }
-            }
- 
-        stage ('publish artifact') {
-            steps {
-                echo "==================== Dockerhub login ===================="
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_kojl9', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-                    sh "docker login -u $USERNAME -p $PASSWORD"
-                }
-                echo "==================== END of longin ===================="
-				echo "==================== Start pushing of image ===================="
-                sh "docker push kojl9/nodejs:latest"
-				sh "docker push kojl9/nodejs:stable"
-                echo "==================== Push of image is finished ===================="
-                }
-            }
-        }
+     
+    stage('Test') {
+      steps {
+         sh 'npm test'
+      }
+    }      
+  }
 }
