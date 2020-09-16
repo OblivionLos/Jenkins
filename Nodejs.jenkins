@@ -17,10 +17,8 @@ spec:
       container('busybox') {
         sh "apt-get update && apt-get install -y curl sudo wget apt-transport-https ca-certificates gnupg-agent software-properties-common "
         sh "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -"
-        sh "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
-        sh "add-apt-repository "deb [arch=amd64] "https://download.docker.com/linux/ubuntu"   $(lsb_release -cs)  stable""
         sh "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
-        sh "sudo apt-get install -y docker-ce docker-ce-cli containerd.io"
+        sh "sudo apt install -y docker-ce"
         sh "apt update"
         sh "sudo docker --version"
         sh "apt install -y git"
