@@ -20,6 +20,8 @@ spec:
         sh "apt install -y git"
         sh "apt-get update && apt-get install -y nodejs"
         sh "git clone https://github.com/americans007/react-app"
+        sh "ls"
+        sh "cd react-app"
       }
     }
 }
