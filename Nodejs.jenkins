@@ -16,8 +16,8 @@ spec:
     node(POD_LABEL) {
       container('busybox') {
         sh "hostname"
-        sh pwd
-        sh ls
+        sh "pwd"
+        sh "ls"
       }
     }
 }
