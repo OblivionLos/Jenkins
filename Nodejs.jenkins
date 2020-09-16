@@ -17,11 +17,17 @@ spec:
       container('busybox') {
         sh "apt-get update && apt-get install -y curl sudo wget"
         sh "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -"
+        sh "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
+        sh "apt-get install -y docker-ce docker-ce-cli containerd.io"
+        sh "apt update"
+        sh "sudo docker --version"
         sh "apt install -y git"
         sh "apt-get update && apt-get install -y nodejs"
+        sh "npm install -g serve"
         sh "git clone https://github.com/americans007/react-app"
-        sh "ls"
         sh "cd react-app"
+        sh "npm install"
+        sh "npm run build"
       }
     }
 }
