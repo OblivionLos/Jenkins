@@ -23,8 +23,7 @@ spec:
         sh "apt-get update && apt-get install -y nodejs"
         sh "npm install -g serve"
         sh "git clone https://github.com/americans007/react-app"
-        sh "cd react-app"
-        sh "sudo npm install -q"
+        sh "cd react-app && sudo npm install"
         sh "sudo npm run build"
       }
     }
