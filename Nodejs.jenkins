@@ -18,7 +18,7 @@ spec:
         sh "apt-get update && apt-get install -y curl sudo wget apt-transport-https ca-certificates gnupg-agent software-properties-common "
         sh "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -"
         sh "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -"
-        sh "sudo apt install -y docker-ce"
+        sh "sudo apt install -y docker"
         sh "apt update"
         sh "sudo docker --version"
         sh "apt install -y git"
