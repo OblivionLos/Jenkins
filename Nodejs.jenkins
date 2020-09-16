@@ -15,9 +15,10 @@ spec:
 ) {
     node(POD_LABEL) {
       container('busybox') {
-        sh "hostname"
-        sh "pwd"
-        sh "ls"
+        sh "apt-get update && apt-get install -y curl sudo wget"
+        sh "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -"
+        sh "apt install -y git"
+        sh "apt-get update && apt-get install -y nodejs"
         sh "git clone https://github.com/americans007/react-app"
       }
     }
